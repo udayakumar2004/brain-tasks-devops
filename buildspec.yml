@@ -2,16 +2,16 @@ version: 0.2
 
 phases:
   pre_build:
-  commands:
-    - echo Logging into Docker Hub
-    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-    - echo Installing kubectl
-    - curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-    - chmod +x kubectl
-    - mv kubectl /usr/local/bin/
-    - kubectl version --client
-    - echo Updating kubeconfig for EKS
-    - aws eks update-kubeconfig --region ap-south-1 --name brain-tasks-cluster
+    commands:
+      - echo Logging into Docker Hub
+      - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+      - echo Installing kubectl
+      - curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+      - chmod +x kubectl
+      - mv kubectl /usr/local/bin/
+      - kubectl version --client
+      - echo Updating kubeconfig for EKS
+      - aws eks update-kubeconfig --region ap-south-1 --name brain-tasks-cluster
     
   build:
     commands:
