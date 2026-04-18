@@ -1,0 +1,20 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - echo Logging into Docker Hub
+      - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+
+  build:
+    commands:
+      - echo Build started
+      - docker build -t brain-tasks-app .
+      - docker tag brain-tasks-app $DOCKER_USERNAME/brain-tasks-app:latest
+
+  post_build:
+    commands:
+      - echo Pushing image
+      - docker push $DOCKER_USERNAME/brain-tasks-app:latest
+      - echo Deployment update
+      - kubectl set image deployment/brain-tasks-deployment brain-tasks-container=$DOCKER_USERNAME/brain-tasks-app:latest
