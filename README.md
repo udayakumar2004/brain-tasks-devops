@@ -1,91 +1,157 @@
-DevOps Practice Project – Dist Directory
+# 🚀 Brain Tasks App – DevOps Deployment Project
 
-This repository contains the production-ready build files (dist folder) for DevOps practice and deployment exercises.
+## 📌 Project Overview
+This project demonstrates a **production-ready DevOps pipeline** for deploying a React-based application using Docker, Kubernetes (EKS), and AWS CI/CD services.
+The application is containerized and deployed on AWS using a fully automated pipeline.
 
-It is intentionally structured to help learners focus on CI/CD pipelines, hosting, containerization, and infrastructure setup rather than application development.
+## 🧱 Tech Stack
 
-📁 What This Repository Contains
+* Frontend: React (pre-built dist)
+* Containerization: Docker
+* Orchestration: Kubernetes
+* Cloud: AWS
+* CI/CD: CodePipeline + CodeBuild
+* Registry: Docker Hub
+* Monitoring: CloudWatch
 
-dist/ – Compiled and production-ready static files
+---
 
-HTML
+## 🏗️ Architecture
 
-CSS
+1. Developer pushes code to GitHub
+2. CodePipeline triggers automatically
+3. CodeBuild:
 
-JavaScript
+   * Builds Docker image
+   * Pushes to Docker Hub
+   * Updates Kubernetes deployment
+4. EKS cluster pulls latest image
+5. Application exposed via LoadBalancer
 
-Assets (images, fonts, etc.)
+---
 
-These files are ready to deploy to:
+## 📂 Project Structure
 
-Web servers (Nginx / Apache)
+```
+Brain-Tasks-App/
+│── dist/
+│── Dockerfile
+│── deployment.yaml
+│── service.yaml
+│── buildspec.yml
+```
 
-Cloud platforms (AWS S3, Azure Blob, GCP Storage)
+---
 
-Containerized environments (Docker + Nginx)
+## 🐳 Docker Setup
 
-Kubernetes clusters
+### Build Image
 
-CI/CD pipeline demonstrations
+```
+docker build -t brain-tasks-app .
+```
 
-🎯 Purpose of This Repository
+### Run Locally
 
-This repository is designed for:
+```
+docker run -d -p 3000:80 brain-tasks-app
+```
 
-DevOps beginners
+---
 
-CI/CD practice
+## ☸️ Kubernetes Deployment
 
-Deployment pipeline testing
+### Apply Deployment
 
-Docker & Kubernetes deployment exercises
+```
+kubectl apply -f deployment.yaml
+kubectl apply -f service.yaml
+```
 
-Web server configuration practice
+### Get Service URL
 
-Reverse proxy and load balancer setup
+```
+kubectl get svc
+```
 
-The goal is to simulate real-world deployment scenarios using already built application files.
+---
 
-❓ Why is there NO package.json?
+## 🔄 CI/CD Pipeline
 
-You may notice that this repository does not include:
+### Pipeline Flow
 
-package.json
+```
+GitHub → CodePipeline → CodeBuild → Docker Hub → EKS
+```
 
-node_modules
+### buildspec.yml Responsibilities
 
-Source code (src/)
+* Login to Docker Hub
+* Build Docker image
+* Push image to Docker Hub
+* Update Kubernetes deployment
+* Verify rollout
 
-Build tools configuration
+---
 
-✅ Reason:
+## 📊 Monitoring
 
-This repository only contains the final production build output (dist), not the development source code.
+* CloudWatch Logs used for:
 
-In a typical project:
+  * Build logs
+  * Pipeline execution
+  * Error debugging
 
-Developers write source code.
+---
 
-The project is built using tools like:
+## 🌐 Application Access
 
-Node.js
+Application is exposed via:
 
-Webpack
+```
+LoadBalancer (AWS ELB)
+```
 
-Vite
+---
 
-React (or other frameworks)
+## ⚠️ Challenges Faced
 
-A dist/ folder is generated.
+* IAM permission issues (EKS access)
+* Docker image pull errors
+* Kubernetes deployment mismatch
+* kubectl binary issues
+* YAML formatting errors
 
-Only the production build is deployed to servers.
 
-This repository represents step 4 only.
+## ✅ Solutions Implemented
 
-Since this is already the compiled output:
+* Attached correct IAM policies
+* Used correct Docker image tagging
+* Fixed buildspec.yml structure
+* Installed proper kubectl binary
+* Used wildcard container update
 
-No dependencies are required
+## 🧹 Cleanup
 
-No build process is required
+To avoid charges:
 
-No package.json is needed
+```
+eksctl delete cluster --name brain-tasks-cluster --region ap-south-1
+```
+
+---
+
+## 🎯 Conclusion
+
+This project demonstrates:
+
+* End-to-end CI/CD pipeline
+* Real-world DevOps debugging
+* Cloud-native deployment
+* Production-ready architecture
+
+---
+
+## 👨‍💻 Author
+
+K.Udaya Kumar
