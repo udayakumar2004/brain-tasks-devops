@@ -2,19 +2,17 @@ version: 0.2
 
 phases:
   pre_build:
-    commands:
-      - echo Logging into Docker Hub
-      - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-      - echo Installing kubectl
-      - curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-      - chmod +x kubectl
-      - mv kubectl /usr/local/bin/
-      - kubectl version --client
-      - chmod +x kubectl
-      - mv kubectl /usr/local/bin/
-      - echo Updating kubeconfig for EKS
-      - aws eks update-kubeconfig --region ap-south-1 --name brain-tasks-cluster
-
+  commands:
+    - echo Logging into Docker Hub
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+    - echo Installing kubectl
+    - curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+    - chmod +x kubectl
+    - mv kubectl /usr/local/bin/
+    - kubectl version --client
+    - echo Updating kubeconfig for EKS
+    - aws eks update-kubeconfig --region ap-south-1 --name brain-tasks-cluster
+    
   build:
     commands:
       - echo Build started
@@ -23,10 +21,10 @@ phases:
 
   post_build:
     commands:
-      - echo Pushing image
-      - docker push $DOCKER_USERNAME/brain-tasks-app:latest
-      - echo Updating Kubernetes deployment
-      - kubectl set image deployment/brain-tasks-deployment *=$DOCKER_USERNAME/brain-tasks-app:latest
-      - echo Verifying rollout
-      - kubectl rollout status deployment/brain-tasks-deployment
+        - echo Pushing image
+        - docker push $DOCKER_USERNAME/brain-tasks-app:latest
+        - echo Updating Kubernetes deployment
+        - kubectl set image deployment/brain-tasks-deployment brain-tasks-container=$DOCKER_USERNAME/brain-tasks-app:latest
+        - echo Verifying rollout
+        - kubectl rollout status deployment/brain-tasks-deployment
 
