@@ -5,6 +5,12 @@ phases:
     commands:
       - echo Logging into Docker Hub
       - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+      - echo Installing kubectl
+      - curl -o kubectl https://s3.us-west-2.amazonaws.com/amazon-eks/1.27.0/2023-05-09/bin/linux/amd64/kubectl
+      - chmod +x kubectl
+      - mv kubectl /usr/local/bin/
+      - echo Updating kubeconfig for EKS
+      - aws eks update-kubeconfig --region ap-south-1 --name brain-tasks-cluster
 
   build:
     commands:
@@ -12,9 +18,16 @@ phases:
       - docker build -t brain-tasks-app .
       - docker tag brain-tasks-app $DOCKER_USERNAME/brain-tasks-app:latest
 
-  post_build:
+  pre_build:
     commands:
-      - echo Pushing image
-      - docker push $DOCKER_USERNAME/brain-tasks-app:latest
-      - echo Deployment update
-      - kubectl set image deployment/brain-tasks-deployment brain-tasks-container=$DOCKER_USERNAME/brain-tasks-app:latest
+      - echo Logging into Docker Hub
+      - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+      - echo Installing kubectl
+      - curl -o kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.27.0/2023-05-09/bin/linux/amd64/kubectl
+      - chmod +x kubectl
+      - mv kubectl /usr/local/bin/
+      - echo Checking AWS CLI
+      - aws --version
+      - echo Updating kubeconfig for EKS
+      - aws eks update-kubeconfig --region ap-south-1 --name brain-tasks-cluster
+
